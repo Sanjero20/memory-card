@@ -11,16 +11,28 @@ const getCharacters = () => {
   return response;
 };
 
-function filterDetails(obj) {
-  const { character, role, favorites } = obj;
-  const { images, name } = character;
+const filterCharacters = (list) => {
+  // Remove voice actor and role property
+  const filter1 = list.map(
+    ({ voice_actors, role, ...properties }) => properties
+  );
 
-  return {
-    name: name,
-    role: role,
-    img: images.webp.image_url,
-    likes: favorites,
-  };
-}
+  // Only get the popular characters
+  // To include every character, change value to 0
+  const minimumLikes = 100;
+  let populars = filter1.filter(
+    (character) => character.favorites > minimumLikes
+  );
 
-export { getCharacters, filterDetails };
+  // Filter out everything else, except name and image url
+  populars = populars.map(({ character }) => {
+    return {
+      name: character.name,
+      img: character.images.webp.image_url,
+    };
+  });
+
+  return populars;
+};
+
+export { getCharacters, filterCharacters };

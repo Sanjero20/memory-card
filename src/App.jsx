@@ -1,55 +1,96 @@
 import React, { useEffect, useState } from 'react';
-import { getCharacters, filterDetails } from './modules/characters';
+import { getCharacters, filterCharacters } from './modules/characters';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Cards from './components/Cards';
-
-const minimumLikes = 100;
+import PlayButton from './components/PlayButton';
 
 function App() {
   const [characters, setCharacters] = useState([]);
-  const [selectedCharacters, setSelectedCharacters] = useState([]);
+
+  const [round, setRound] = useState(0);
+  const [pickedCharacters, setPickedCharacters] = useState([]);
+
+  const [isGameOver, setIsGameOver] = useState(true);
 
   // Will only run at first render
   useEffect(() => {
+    // Set the characters with filtered properties
     getCharacters().then((res) => {
-      const data = res.data.data;
-      const list = [];
-
-      // Only include the key/value that is needed
-      data.forEach((item) => {
-        list.push(filterDetails(item));
-      });
-
-      // Get the popular characters
-      const filteredList = list.filter((item) => item.likes > minimumLikes);
-
-      // Set the characters list
-      setCharacters([...filteredList]);
+      let data = res.data.data;
+      data = filterCharacters(data);
+      setCharacters([...data]);
     });
   }, []);
 
-  const shuffleCards = () => {
-    const list = selectRandomCharacters(characters, 4);
-    setSelectedCharacters([...list]);
+  // GameOver
+  useEffect(() => {
+    if (isGameOver == true) {
+      setRound(0);
+      return;
+    }
+
+    setRound(1);
+  }, [isGameOver]);
+
+  // Round Updates
+  useEffect(() => {
+    if (round == 0) return;
+
+    let newList = [];
+
+    if (round == 1) {
+      newList = selectRandom(characters, 4);
+      setPickedCharacters([...newList]);
+      return;
+    }
+
+    setPickedCharacters((prevState) => {
+      const amount = prevState.length + 2;
+      newList = selectRandom(characters, amount);
+      return [...newList];
+    });
+  }, [round]);
+
+  // Functions
+  const playGame = () => {
+    setIsGameOver(false);
+    setRound(1);
+  };
+
+  const nextRound = (list) => {
+    const isAllClicked = list.every((element) => element.isClicked == true);
+    if (isAllClicked) {
+      setRound((prevRound) => {
+        return prevRound + 1;
+      });
+    }
+  };
+
+  const clickCard = (e, obj) => {
+    console.log(obj);
+    // if not clicked then change to true
+    // shuffle card order
+    // gameover
   };
 
   return (
     <div className="App">
       <Header></Header>
 
-      <Cards characters={selectedCharacters} />
-      <button className="btn" onClick={shuffleCards}>
-        Shuffle
-      </button>
+      {isGameOver ? (
+        <PlayButton play={playGame} />
+      ) : (
+        <Cards characters={pickedCharacters} clickCard={clickCard}></Cards>
+      )}
 
       <Footer></Footer>
     </div>
   );
 }
 
-function selectRandomCharacters(list, length) {
+function selectRandom(list, length) {
   const randomCharacters = [];
 
   while (randomCharacters.length != length) {

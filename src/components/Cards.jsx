@@ -1,18 +1,16 @@
 import React from 'react';
 
-function Cards({ characters }) {
+function Cards({ characters, clickCard }) {
   const renderCards = () => {
+    if (!characters) return;
     return characters.map((character) => (
       <div
         className="card"
         key={character.name}
-        onClick={() => {
-          // Will be used for game mechanics later
-          console.log(character.name);
-        }}
+        onClick={(e) => clickCard(e, character)}
       >
         <img className="card-img" src={character.img} alt="" />
-        <h3>{character.name}</h3>
+        <p className="name">{character.name}</p>
       </div>
     ));
   };
