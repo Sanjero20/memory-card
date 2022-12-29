@@ -1,0 +1,25 @@
+.card-container {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
+
+  width: min(80%, 1000px);
+  min-height: 350px;
+  padding: 2em;
+  background-color: white;
+}
+
+.card {
+  box-sizing: border-box;
+  text-align: center;
+  width: 20%;
+}
+
+.card-img {
+  border-radius: 10px;
+  width: 100%;
+  height: auto;
+}
