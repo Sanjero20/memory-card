@@ -40,8 +40,9 @@ function App() {
 
     let newList = [];
 
+    let numberOfCards = 4;
     if (round == 1) {
-      newList = selectRandom(characters, 4);
+      newList = selectRandom(characters, numberOfCards);
       setPickedCharacters([...newList]);
       return;
     }

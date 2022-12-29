@@ -10,7 +10,6 @@ function Cards({ characters, clickCard }) {
         onClick={(e) => clickCard(e, character)}
       >
         <img className="card-img" src={character.img} alt="" />
-        <p className="name">{character.name}</p>
       </div>
     ));
   };
