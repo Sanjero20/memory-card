@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { getCharacters, filterCharacters } from './modules/characters';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Cards from './components/Cards';
 import PlayButton from './components/PlayButton';
 
+import {
+  getCharacters,
+  filterCharacters,
+  refreshList,
+} from './modules/characters';
+import { shuffle, selectRandom } from './modules/shuffle';
+
 function App() {
   const [characters, setCharacters] = useState([]);
-
-  const [round, setRound] = useState(0);
   const [pickedCharacters, setPickedCharacters] = useState([]);
 
+  const [round, setRound] = useState(0);
   const [isGameOver, setIsGameOver] = useState(true);
 
   // Will only run at first render
@@ -24,32 +29,20 @@ function App() {
     });
   }, []);
 
-  // GameOver
-  useEffect(() => {
-    if (isGameOver == true) {
-      setRound(0);
-      return;
-    }
-
-    setRound(1);
-  }, [isGameOver]);
-
   // Round Updates
   useEffect(() => {
     if (round == 0) return;
 
-    let newList = [];
-
     let numberOfCards = 4;
     if (round == 1) {
-      newList = selectRandom(characters, numberOfCards);
+      let newList = selectRandom(characters, numberOfCards);
       setPickedCharacters([...newList]);
       return;
     }
 
     setPickedCharacters((prevState) => {
       const amount = prevState.length + 2;
-      newList = selectRandom(characters, amount);
+      let newList = selectRandom(characters, amount);
       return [...newList];
     });
   }, [round]);
@@ -58,6 +51,14 @@ function App() {
   const playGame = () => {
     setIsGameOver(false);
     setRound(1);
+  };
+
+  const gameOver = () => {
+    setIsGameOver(true);
+    setRound(0);
+    const refresh = refreshList(characters);
+    setCharacters([...refresh]);
+    setPickedCharacters([]);
   };
 
   const nextRound = (list) => {
@@ -69,11 +70,21 @@ function App() {
     }
   };
 
-  const clickCard = (e, obj) => {
-    console.log(obj);
-    // if not clicked then change to true
-    // shuffle card order
-    // gameover
+  const clickCard = (e, card) => {
+    // Stop game if card is already clicked
+    if (card.isClicked) {
+      gameOver();
+      return;
+    }
+
+    // If not clicked, set the property to true
+    const index = pickedCharacters.findIndex((obj) => obj.name == card.name);
+    const newList = pickedCharacters;
+    newList[index]['isClicked'] = true;
+
+    // Reshuffle card order
+    const shuffledCards = shuffle(newList);
+    setPickedCharacters([...shuffledCards]);
   };
 
   return (
@@ -89,21 +100,6 @@ function App() {
       <Footer></Footer>
     </div>
   );
-}
-
-function selectRandom(list, length) {
-  const randomCharacters = [];
-
-  while (randomCharacters.length != length) {
-    const randomNumber = Math.floor(Math.random() * list.length);
-    const selected = list[randomNumber];
-
-    if (!randomCharacters.includes(selected)) {
-      randomCharacters.push(selected);
-    }
-  }
-
-  return randomCharacters;
 }
 
 export default App;

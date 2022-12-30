@@ -29,10 +29,21 @@ const filterCharacters = (list) => {
     return {
       name: character.name,
       img: character.images.webp.image_url,
+      isClicked: false,
     };
   });
 
   return populars;
 };
 
-export { getCharacters, filterCharacters };
+const refreshList = (list) => {
+  // Set isClicked to false for every character
+  return list.map((character) => {
+    return {
+      ...character,
+      isClicked: false,
+    };
+  });
+};
+
+export { getCharacters, filterCharacters, refreshList };
