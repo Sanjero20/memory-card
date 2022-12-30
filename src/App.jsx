@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 
+// Components
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Cards from './components/Cards';
 import PlayButton from './components/PlayButton';
 
+import Splash from './components/Splash';
+
+// External functions
+import hideSplash from './modules/splash';
+import { shuffle, selectRandom } from './modules/shuffle';
 import {
   getCharacters,
   filterCharacters,
   refreshList,
 } from './modules/characters';
-import { shuffle, selectRandom } from './modules/shuffle';
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -26,6 +31,7 @@ function App() {
       let data = res.data.data;
       data = filterCharacters(data);
       setCharacters([...data]);
+      hideSplash();
     });
   }, []);
 
@@ -70,7 +76,7 @@ function App() {
     }
   };
 
-  const clickCard = (e, card) => {
+  const clickCard = (card) => {
     // Stop game if card is already clicked
     if (card.isClicked) {
       gameOver();
@@ -89,6 +95,8 @@ function App() {
 
   return (
     <div className="App">
+      <Splash></Splash>
+
       <Header></Header>
 
       {isGameOver ? (
@@ -103,3 +111,7 @@ function App() {
 }
 
 export default App;
+
+// Unexpected Behaviour: Clicking play before the data is processed
+// To Fix:
+// Add loading screen to let it load the data from the API

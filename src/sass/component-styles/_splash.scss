@@ -1,0 +1,27 @@
+// Loading CSS
+.splash-screen {
+  pointer-events: all;
+
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  background-color: $blue;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 500ms;
+  transition-delay: 1.5s;
+
+  &.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .OP-logo {
+    width: min(50%, 500px);
+    height: auto;
+  }
+}
