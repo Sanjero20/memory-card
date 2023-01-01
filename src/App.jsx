@@ -1,3 +1,4 @@
+import './sass/app.scss';
 import React, { useEffect, useState } from 'react';
 
 // Components
@@ -111,7 +112,3 @@ function App() {
 }
 
 export default App;
-
-// Unexpected Behaviour: Clicking play before the data is processed
-// To Fix:
-// Add loading screen to let it load the data from the API

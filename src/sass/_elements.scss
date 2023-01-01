@@ -1,0 +1,20 @@
+// Generic styles
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+header,
+footer {
+  background-color: $blue;
+  text-align: center;
+  width: 100%;
+  color: white;
+  padding: 0.25em 0;
+}
+
+button {
+  padding: 1em 2em;
+}
