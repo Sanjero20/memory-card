@@ -10,20 +10,24 @@
 
 .card {
   height: 225px;
+  animation-name: zoom-in;
+  animation-duration: $speed;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-
-  transition: all 100ms;
-  transform: scale(1);
-
-  &.minimize {
-    transform: scale(0);
-  }
 }
 
 .card-img {
   max-width: 100%;
   max-height: 100%;
+}
+
+@keyframes zoom-in {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 @media (600px <= width <= 850px) {
