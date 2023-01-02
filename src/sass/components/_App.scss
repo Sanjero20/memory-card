@@ -1,9 +1,7 @@
 .App {
-  display: flex;
-  flex-direction: column;
+  @include flex(column);
   align-items: center;
   justify-content: space-between;
-
-  background-image: url(../assets/Site-background-light.webp);
   min-height: 100vh;
+  background-color: $primary;
 }
