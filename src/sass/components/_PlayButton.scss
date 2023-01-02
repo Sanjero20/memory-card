@@ -1,0 +1,16 @@
+.btn-play {
+  font-size: 1.25em;
+  font-weight: bold;
+  background-color: $black;
+  border-radius: 5px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  padding: 9px 20px;
+}
+
+.btn-play:hover,
+.btn-play:focus {
+  opacity: 0.85;
+}
