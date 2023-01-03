@@ -9,8 +9,8 @@ function selectRandom(list, length) {
     const randomNumber = Math.floor(Math.random() * list.length);
     const selected = list[randomNumber];
 
-    // Already played cards will not be included
-    if (selected.isClicked) return;
+    // Skip already played cards
+    if (selected.isClicked) continue;
 
     // Prevent character duplication
     if (!randomCharacters.includes(selected)) {
