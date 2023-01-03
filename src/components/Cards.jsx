@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { GameContext } from '../App';
 
-function Cards({ characters, clickCard }) {
+function Cards() {
+  const game = useContext(GameContext);
+  const { cards, clickCard } = game;
+
   const renderCards = () => {
-    if (!characters) return;
-    return characters.map((character) => (
+    if (!cards) return;
+    return cards.map((character) => (
       <div
         className="card"
         key={Math.random()}
@@ -11,7 +15,12 @@ function Cards({ characters, clickCard }) {
           clickCard(character);
         }}
       >
-        <img className="card-img" src={character.img} alt="" />
+        <img
+          className="card-img"
+          src={character.img}
+          draggable="false"
+          alt=""
+        />
       </div>
     ));
   };

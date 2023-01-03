@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { GameContext } from '../App';
 
-function PlayButton({ play }) {
+function PlayButton() {
+  const game = useContext(GameContext);
+  if (!game.isGameOver) return;
+
   return (
-    <button className="btn-play" onClick={play}>
+    <button className="btn-play" onClick={game.playGame}>
       PLAY
     </button>
   );
