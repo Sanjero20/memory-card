@@ -1,5 +1,5 @@
 .card-container {
-  width: min(100%, 1000px);
+  width: $container-size;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

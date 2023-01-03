@@ -1,5 +1,4 @@
 @import './variables';
-@import './mixins';
 @import './elements';
 
 // components stylings here
@@ -7,3 +6,5 @@
 @import './components/Cards';
 @import './components/Loading';
 @import './components/PlayButton';
+@import './components/Game';
+@import './components/Scoreboard';

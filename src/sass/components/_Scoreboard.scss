@@ -1,0 +1,11 @@
+.score-board {
+  width: min(100%, 500px);
+  box-sizing: border-box;
+  padding: 20px;
+  text-align: center;
+
+  .scores {
+    display: flex;
+    justify-content: space-between;
+  }
+}
