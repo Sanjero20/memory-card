@@ -1,5 +1,5 @@
 import './sass/app.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 // Components
 import Loading from './components/Loading';
@@ -10,25 +10,29 @@ import Game from './components/Game';
 import Footer from './components/Footer';
 
 //
-import { shuffle, selectRandom } from './modules/shuffle';
 import {
   getCharacters,
   filterCharacters,
   refreshList,
 } from './modules/characters';
+import { shuffle, selectRandom } from './modules/shuffle';
+import { gameReducer, initialGameState } from './modules/gameStatus';
+
+import { getHighScore, saveHighScore } from './modules/highscore';
 
 // Context API
 export const GameContext = React.createContext();
 
 function App() {
+  const [gameStats, gameDispatch] = useReducer(gameReducer, initialGameState);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const [characters, setCharacters] = useState([]);
   const [cards, setCards] = useState([]);
 
-  const [round, setRound] = useState(0);
-  const [isGameOver, setIsGameOver] = useState(true);
+  const [highScore, setHighScore] = useState(getHighScore);
 
   // Fetch character list from Jikan API
   useEffect(() => {
@@ -40,49 +44,55 @@ function App() {
         setLoading(false);
       })
       .catch((err) => {
-        setLoading(false);
         setError('Something went wrong, Try Again!');
+        setLoading(false);
       });
   }, []);
 
   // Add or Reset Number of Cards
   useEffect(() => {
-    if (round == 0) return;
+    if (gameStats.round == 0) return;
 
-    let numberOfCards = 4;
-    if (round == 1) {
+    const numberOfCards = 4;
+    if (gameStats.round == 1) {
       let newList = selectRandom(characters, numberOfCards);
-      setCards([...newList]);
+      setCards(newList);
       return;
     }
 
     setCards((prevState) => {
-      const amount = prevState.length + 2;
-      let newList = selectRandom(characters, amount);
-      return [...newList];
+      const numberOfCards = prevState.length + 2;
+      const newCards = selectRandom(characters, numberOfCards);
+      return newCards;
     });
-  }, [round]);
+  }, [gameStats.round]);
+
+  useEffect(() => {
+    let score = gameStats.score;
+    if (score > highScore) {
+      setHighScore(score);
+      saveHighScore(score);
+    }
+  }, [gameStats.score]);
 
   // Functions
   const playGame = () => {
-    setIsGameOver(false);
-    setRound(1);
+    gameDispatch('start-game');
   };
 
   const gameOver = () => {
-    setIsGameOver(true);
-    setRound(0);
     const refresh = refreshList(characters);
     setCharacters([...refresh]);
     setCards([]);
+
+    gameDispatch('gameover');
   };
 
   const nextRound = (list) => {
     const isAllClicked = list.every((element) => element.isClicked == true);
     if (isAllClicked) {
-      setRound((prevRound) => {
-        return prevRound + 1;
-      });
+      gameDispatch('next-round');
+      return;
     }
   };
 
@@ -98,9 +108,14 @@ function App() {
     const newList = cards;
     newList[index]['isClicked'] = true;
 
+    // Check if every card is already click
+    nextRound(cards);
+
     // Reshuffle card order
     const shuffledCards = shuffle(newList);
     setCards([...shuffledCards]);
+
+    gameDispatch('add-score');
   };
 
   return (
@@ -113,10 +128,13 @@ function App() {
       {!loading && !error && (
         <GameContext.Provider
           value={{
-            isGameOver,
             playGame,
             cards,
             clickCard,
+            highScore,
+            score: gameStats.score,
+            round: gameStats.round,
+            isGameOver: gameStats.isGameOver,
           }}
         >
           <PlayButton />
