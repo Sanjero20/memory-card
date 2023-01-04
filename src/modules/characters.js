@@ -17,12 +17,13 @@ const filterCharacters = (list) => {
     ({ voice_actors, role, ...properties }) => properties
   );
 
+  // Sort based on number of likes / favorites
+  const sorted = filter1.sort((a, b) => {
+    return a.favorites > b.favorites ? -1 : 1;
+  });
+
   // Only get the popular characters
-  // To include every character, change value to 0
-  const minimumLikes = 100;
-  let populars = filter1.filter(
-    (character) => character.favorites > minimumLikes
-  );
+  let populars = sorted.splice(0, 88);
 
   // Filter out everything else, except name and image url
   populars = populars.map(({ character }) => {
